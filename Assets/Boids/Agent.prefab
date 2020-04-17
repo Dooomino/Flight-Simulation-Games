@@ -47,12 +47,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sightDistance: 5
-  sightAngle: 180
+  sightAngle: 0
   sepStrength: 1
   cohesStrength: 1
   aligStrength: 1
   atractStrength: 1
-  speed: 1
+  speed: 5
+  numPoints: 1000
   attractor: {fileID: 0}
 --- !u!136 &6213507573931801296
 CapsuleCollider:
