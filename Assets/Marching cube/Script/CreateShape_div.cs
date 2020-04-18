@@ -5,24 +5,57 @@ using UnityEngine;
 // ORIGINAL Code From: https://github.com/b3agz/how-to-make-7-days-to-die-in-unity/blob/master/01-marching-cubes/Marching.cs
 
 [RequireComponent(typeof(MeshFilter))]
-public class CreateShape : MonoBehaviour
+public class CreateShape_div : MonoBehaviour
 {
     List<Vector3> vertices = new List<Vector3>();
     List<int> triangles = new List<int>();
 
-    int width = 16;
-    int height = 16;
-    int depth = 16;
+    public bool isCube = true;
+    public int width = 16;
+    public int height = 16;
+    public int depth = 16;
     float terrainSurface = 0.1f;
+    public Vector3 scale = new Vector3(1.0f,1.0f,1.0f);
     float[,,] terrainMap;
+
+    float xfac,yfac,zfac;
+
+    [Range(0.1f,1)]
+    public float threshold = 16;
     Mesh mesh;
     // Start is called before the first frame update
     void Start()
-    {
+    {   
+        xfac = Random.Range(0,10000);
+        yfac = Random.Range(0,10000);
+        zfac = Random.Range(0,10000);
+
+        float scaleF = scale.x;
+        if (isCube){
+            depth = height = width;
+            scale.y = scale.z = scaleF;
+        }
         Create();
     }
+    // Update is called once per frame
+    void Update()
+    {
+        float scaleF = scale.x;
+        if (isCube){
+            depth = height = width;
+            scale.y = scale.z = scaleF;
+        }
+        Create();
+        
+    }
 
-    [ContextMenu("Creat Shape")]
+    [ContextMenu("Create Shape")]
+    void ContextCreate(){
+        xfac = Random.Range(0,10000);
+        yfac = Random.Range(0,10000);
+        zfac = Random.Range(0,10000);
+        Create();
+    }
     void Create(){
         mesh = new Mesh();
         terrainMap = new float[width + 1,height + 1,depth + 1];
@@ -57,22 +90,29 @@ public class CreateShape : MonoBehaviour
             0, 1, 6
         };*/
          for (int x = 0; x < width + 1; x++) {
-            for (int z = 0; z < width + 1; z++) {
+            for (int z = 0; z < depth + 1; z++) {
                 for (int y = 0; y < height + 1; y++) {
 
                     // Perlin noise.
-                    float thisHeight = (float)height * Mathf.PerlinNoise((float)x / 16f * 1.5f + 0.001f, (float)z / 16f * 1.5f + 0.001f);
+                    float curval = perlin3D(
+                                    (float)x/width  * 2.0f + xfac, 
+                                    (float)y/height * 2.0f + yfac,
+                                    (float)z/depth  * 2.0f + zfac);
 
                     float point = 0;
-                    if (y <= thisHeight - 0.5f)
-                        point = 0f;
-                    else if (y > thisHeight + 0.5f)
-                        point = 1f;
-                    else if (y > thisHeight)
-                        point = (float)y - thisHeight;
-                    else
-                        point = thisHeight - (float)y;
-
+                    if(curval>threshold){
+                        // Debug.Log(point);
+                        
+                        if (y <= curval - 0.5f)
+                            point = 0.1f;
+                        else if (y > curval + 0.5f)
+                            point = 1f;
+                        else if (y > curval)
+                            point = (float)y - curval;
+                        else
+                            point = curval - (float)y;
+                   
+                    }
                     // Set the value of this point in the terrainMap.
                     terrainMap[x, y, z] = point;
                 }
@@ -149,6 +189,33 @@ public class CreateShape : MonoBehaviour
         return configurationIndex;
 
     }
+
+    private void OnDrawGizmos() {
+           for (int x = 0; x < width + 1; x++) {
+                for (int z = 0; z < depth + 1; z++) {
+                    for (int y = 0; y < height + 1; y++) {
+                        float p =  perlin3D(
+                                    (float)x/width  * 2.0f + xfac, 
+                                    (float)y/height * 2.0f + yfac,
+                                    (float)z/depth  * 2.0f + zfac);
+                        if( p > threshold){
+                            // Debug.Log(p);
+                            float point =0;
+                             if (y <= p - 0.5f)
+                                point = 0.1f;
+                            else if (y > p + 0.5f)
+                                point = 1f;
+                            else if (y > p)
+                                point = (float)y - p;
+                            else
+                                point = p - (float)y;
+                            Vector3 gizpos = Vector3.Scale(new Vector3(x,y,z),scale);
+                            // Gizmos.color = new Color(255 * Mathf.Pow(p,8) ,255 * Mathf.Pow(p,8),255 * Mathf.Pow(p,8));
+                            Gizmos.color = new Color(255 * point,255 * point,255 * point );
+                            Gizmos.DrawSphere(gizpos,10f);
+                        }
+                }}}
+    }
     void updateMesh(){
         mesh.Clear();
         mesh.vertices = vertices.ToArray();
@@ -156,13 +223,24 @@ public class CreateShape : MonoBehaviour
         mesh.RecalculateNormals();
 
     }
-    // Update is called once per frame
-    void Update()
-    {
-       
-        
-    }
+    // Origin of this 3D perlin noise: https://www.youtube.com/watch?v=Aga0TBJkchM
+    public float perlin3D(float x,float y,float z){
+        // three premutations xy,yz,xz
+        float ab = Mathf.PerlinNoise(x,y);
+        float bc = Mathf.PerlinNoise(y,z); 
+        float ac = Mathf.PerlinNoise(x,z);
 
+        //three reverses permutations yx,zy,zx
+
+        float ba = Mathf.PerlinNoise(y,x);
+        float cb = Mathf.PerlinNoise(z,y); 
+        float ca = Mathf.PerlinNoise(z,x);
+
+        // total
+        float abc = (ab+bc+ac)+(ba+cb+ca);
+        // average
+        return abc/6.0f;
+    }
 
 
     // offsets from the minimal corner to other corners
