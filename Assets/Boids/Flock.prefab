@@ -52,3 +52,5 @@ MonoBehaviour:
   aligStrength: 1
   atractStrength: 1
   speed: 5
+  numPoints: 100
+  computeShader: {fileID: 7200000, guid: 68723199631a724499cae7a500e4a10b, type: 3}

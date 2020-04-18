@@ -10,6 +10,8 @@ public class BoidBehavior : MonoBehaviour
     public float sightAngle = 0.0f; //dot product Increasing this number will decrease the boid's POV. A sight angle of 0.0 gives it 90 deg of view from the forward vector
 //https://chortle.ccsu.edu/VectorLessons/vch09/vch09_6.html
     public float sepStrength = 1.0f;
+
+    public float avdTerrnStrength = 1.0f;
     public float cohesStrength = 1.0f;
     public float aligStrength = 1.0f;
 
@@ -18,9 +20,9 @@ public class BoidBehavior : MonoBehaviour
     private float maxForce = 5.0f;
 
     public float speed = 1.0f;
-    public int numPoints = 1000;
+    public int numPoints = 100;
     public GameObject attractor;
-    private Vector3[] sightRays;
+    public Vector3[] sightRays;
     //https://stackoverflow.com/questions/9600801/evenly-distributing-n-points-on-a-sphere/44164075#44164075
 
     private Vector3 AvoidTerrian(){
@@ -42,30 +44,10 @@ public class BoidBehavior : MonoBehaviour
             return (avg / count).normalized;
         }
         return new Vector3(0, 0, 0);
-        //return this.gameObject.GetComponent<Rigidbody>().velocity;
-    }
-    private void DrawSphere(){
-        IEnumerable<float> indicies = Enumerable.Range(0, numPoints).Select(x => (float)x + 0.5f);
-
-        IEnumerable<float> phis = indicies.Select(x => (float)Math.Acos(1.0f - 2 * x / numPoints));
-        IEnumerable<float> thetas = indicies.Select(x => (float)(Math.PI * (1 + Math.Pow(5.0, 0.5) * x)));
-
-        
-        Vector3[] points = new Vector3[numPoints];
-        for(int i = 0; i < numPoints; i ++){
-            //x, y, z = cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi);
-            float x = (float)(Math.Cos(thetas.ElementAt(i)) * Math.Sin(phis.ElementAt(i)));
-            float y = (float)(Math.Sin(thetas.ElementAt(i)) * Math.Sin(phis.ElementAt(i)));
-            float z = (float)(Math.Cos(phis.ElementAt(i)));
-            points[i] = new Vector3(x, y, z);
-        }
-
-        sightRays = points;
     }
 
     private GameObject[] NearbyAgents(){
-        Collider[] hitColliders = Physics.OverlapSphere(this.gameObject.transform.position, sightDistance, LayerMask.NameToLayer("Agents"));
-
+        Collider[] hitColliders = Physics.OverlapSphere(this.gameObject.transform.position, sightDistance);
         List<GameObject> otherAgents = new List<GameObject>();
         foreach(Collider collider in hitColliders){
             otherAgents.Add(collider.gameObject);
@@ -114,7 +96,6 @@ public class BoidBehavior : MonoBehaviour
     {
         GameObject child = transform.GetChild(0).gameObject;
         child.transform.up = this.transform.forward; //This is a hack to make the cones face the direction that it is flying. We may adjust it if we use a better mesh
-        DrawSphere();
     }
 
     void FixedUpdate(){
@@ -147,7 +128,7 @@ public class BoidBehavior : MonoBehaviour
         desiredVelocity = AvoidTerrian();
         steeringForce = desiredVelocity * speed- this.gameObject.GetComponent<Rigidbody>().velocity;
         //steeringForce = max(steeringForce, maxForce);
-        this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce *sepStrength);
+        this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce *avdTerrnStrength);
 
         Vector3 lookAt = this.gameObject.GetComponent<Rigidbody>().velocity;
         Quaternion rotation = Quaternion.LookRotation(lookAt, Vector3.up);
@@ -156,9 +137,8 @@ public class BoidBehavior : MonoBehaviour
         child.transform.rotation = Quaternion.Slerp(child.transform.rotation, rotation, 0.1f);
 
         
-
-
     }
+
     // Update is called once per frame
     void Update()
     {

@@ -289,8 +289,33 @@ PrefabInstance:
     - target: {fileID: 1802842868527157001, guid: d7804f5222fb9a24f803b42ac8318f25,
         type: 3}
       propertyPath: numAgents
-      value: 10
+      value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 1802842868527157001, guid: d7804f5222fb9a24f803b42ac8318f25,
+        type: 3}
+      propertyPath: sepStrength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802842868527157001, guid: d7804f5222fb9a24f803b42ac8318f25,
+        type: 3}
+      propertyPath: cohesStrength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802842868527157001, guid: d7804f5222fb9a24f803b42ac8318f25,
+        type: 3}
+      propertyPath: aligStrength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802842868527157001, guid: d7804f5222fb9a24f803b42ac8318f25,
+        type: 3}
+      propertyPath: atractStrength
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1802842868527157001, guid: d7804f5222fb9a24f803b42ac8318f25,
+        type: 3}
+      propertyPath: computeShader
+      value: 
+      objectReference: {fileID: 7200000, guid: 68723199631a724499cae7a500e4a10b, type: 3}
     - target: {fileID: 1802842868527157007, guid: d7804f5222fb9a24f803b42ac8318f25,
         type: 3}
       propertyPath: m_Name
