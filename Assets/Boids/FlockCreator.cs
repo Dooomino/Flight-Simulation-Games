@@ -19,12 +19,14 @@ public class FlockCreator : MonoBehaviour
     public float speed = 1.0f;
     public int numPoints = 100;
 
+    public float sightDistance = 5.0f;
     private GameObject[] agents;
 
     //GPU stuff
     private ComputeBuffer posBuffer;
     private ComputeBuffer velBuffer;
     private ComputeBuffer resultBuffer;
+    private Vector3[] resultData;
     [SerializeField] ComputeShader computeShader;
     private int kernelHandle;
     private Vector3[] DrawSphere(){
@@ -58,8 +60,12 @@ public class FlockCreator : MonoBehaviour
         agent.GetComponent<BoidBehavior>().aligStrength = aligStrength;
         agent.GetComponent<BoidBehavior>().atractStrength = atractStrength;
         agent.GetComponent<BoidBehavior>().speed = speed;
+
+        
         agent.layer = LayerMask.NameToLayer("Agents");
-        agent.GetComponent<BoidBehavior>().sightRays = DrawSphere();
+        
+
+
         for(int i = 0; i < numAgents; i ++){
             Vector3 pos = UnityEngine.Random.insideUnitCircle;
             pos += this.gameObject.transform.position;
@@ -68,18 +74,52 @@ public class FlockCreator : MonoBehaviour
             pos.z *= UnityEngine.Random.value * spawnRadius;
             GameObject currentAgent = Instantiate(agent, pos, Quaternion.identity);
             currentAgent.transform.parent = this.transform;
+            
             agents[i] = currentAgent;
         }
 
 
         kernelHandle = computeShader.FindKernel("CSMain");
+
+        posBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
+        velBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
+        resultBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
+        resultData = new Vector3[numAgents];
     }
 
-    void setUniforms(){
+    private void setUniforms(){
         
-    }
-    void runShader(){
+        computeShader.SetFloat("sepStrength", sepStrength);
+        computeShader.SetFloat("cohesStrength", cohesStrength);
+        computeShader.SetFloat("aligStrength", aligStrength);
+        computeShader.SetFloat("atractStrength", atractStrength);
+        computeShader.SetFloat("sightDistance", sightDistance);
+        computeShader.SetFloat("speed", speed);
+        computeShader.SetInt("numAgents", numAgents);
 
+        float[] attractorPos = new float[3];
+        attractorPos[0] = attractor.gameObject.transform.position.x;
+        attractorPos[1] = attractor.gameObject.transform.position.y;
+        attractorPos[2] = attractor.gameObject.transform.position.z;
+        computeShader.SetFloats("attractorPos", attractorPos);
+    }
+    private void setBuffer(){
+        posBuffer.SetData(agents.Select(x => x.transform.position).ToArray());
+        velBuffer.SetData(agents.Select(x => x.GetComponent<Rigidbody>().velocity).ToArray());
+
+        computeShader.SetBuffer(kernelHandle, "posBuffer", posBuffer);
+        computeShader.SetBuffer(kernelHandle, "velBuffer", velBuffer);
+        computeShader.SetBuffer(kernelHandle, "resultBuffer", resultBuffer);
+    } 
+    void runShader(){
+        computeShader.Dispatch(kernelHandle, numAgents, 1, 1);
+        resultBuffer.GetData(resultData);
+    }
+
+    private void moveAgents(){
+        for(int i = 0; i < numAgents; i ++){
+            agents[i].GetComponent<Rigidbody>().AddForce(resultData[i]);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -88,6 +128,9 @@ public class FlockCreator : MonoBehaviour
     }
 
     void FixedUpdate(){
+        setUniforms();
+        setBuffer();
         runShader();
+        moveAgents();
     }
 }

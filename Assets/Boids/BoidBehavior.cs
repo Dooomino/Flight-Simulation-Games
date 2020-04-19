@@ -97,7 +97,7 @@ public class BoidBehavior : MonoBehaviour
         GameObject child = transform.GetChild(0).gameObject;
         child.transform.up = this.transform.forward; //This is a hack to make the cones face the direction that it is flying. We may adjust it if we use a better mesh
     }
-
+    /*
     void FixedUpdate(){
         GameObject[] agents = NearbyAgents();
 
@@ -125,6 +125,7 @@ public class BoidBehavior : MonoBehaviour
         this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce *atractStrength);
 
 
+        
         desiredVelocity = AvoidTerrian();
         steeringForce = desiredVelocity * speed- this.gameObject.GetComponent<Rigidbody>().velocity;
         //steeringForce = max(steeringForce, maxForce);
@@ -137,7 +138,7 @@ public class BoidBehavior : MonoBehaviour
         child.transform.rotation = Quaternion.Slerp(child.transform.rotation, rotation, 0.1f);
 
         
-    }
+    }*/
 
     // Update is called once per frame
     void Update()
