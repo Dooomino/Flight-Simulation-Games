@@ -205,6 +205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   currentHealth: 0
+  scoreText: {fileID: 0}
 --- !u!1001 &6213507574771499572
 PrefabInstance:
   m_ObjectHideFlags: 0

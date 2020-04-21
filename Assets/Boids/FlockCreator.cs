@@ -5,6 +5,8 @@ using System.Linq;
 using System;
 public class FlockCreator : MonoBehaviour
 {
+
+    public GameObject scoreText;
     public int numAgents = 100;
     public int spawnRadius = 20;
     public GameObject attractor;
@@ -22,6 +24,7 @@ public class FlockCreator : MonoBehaviour
     public float sightDistance = 5.0f;
     [Range(-1.0f, 1.0f)]
     public float sightAngle = 0.0f; //dot product Increasing this number will decrease the boid's POV. A sight angle of 0.0 gives it 90 deg of view from the forward vector
+
     private Vector3[] sightRays;
     private GameObject[] agents;
 
@@ -79,6 +82,7 @@ public class FlockCreator : MonoBehaviour
             pos.y *= UnityEngine.Random.value * spawnRadius;
             pos.z *= UnityEngine.Random.value * spawnRadius;
             GameObject currentAgent = Instantiate(agent, pos, Quaternion.identity);
+            currentAgent.GetComponent<AgentStats>().scoreText = scoreText;
             currentAgent.transform.parent = this.transform;
             
         }

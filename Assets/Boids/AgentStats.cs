@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using TMPro;
 public class AgentStats : MonoBehaviour
 {
 
     public int maxHealth = 100;
     public int currentHealth;
+
+    [SerializeField] public GameObject scoreText;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +19,9 @@ public class AgentStats : MonoBehaviour
         currentHealth -= damage;
         if(currentHealth <= 0 && !this.gameObject.GetComponent<BoidBehavior>().isDead){
             this.gameObject.GetComponent<BoidBehavior>().die();
+            if(null != scoreText){
+                scoreText.GetComponent<ScoreData>().addScore(10);
+            }
         }
         
     }
