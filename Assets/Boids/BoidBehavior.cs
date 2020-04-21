@@ -23,8 +23,32 @@ public class BoidBehavior : MonoBehaviour
     public int numPoints = 100;
     public GameObject attractor;
     public Vector3[] sightRays;
+    public GameObject explosion;
+    public bool isDead = false;
+    private float deathStart;
+    public float timeToBoom = 3.0f;
     //https://stackoverflow.com/questions/9600801/evenly-distributing-n-points-on-a-sphere/44164075#44164075
 
+    public void Move(Vector3 force){
+        if(isDead){
+            float currentTime = Time.time;
+            if(currentTime - deathStart >= timeToBoom){
+                
+                Instantiate(explosion, this.gameObject.transform.position, Quaternion.identity);
+                Destroy(this.gameObject);
+            }
+
+            Vector3 lookAt = this.gameObject.GetComponent<Rigidbody>().velocity;
+            Quaternion rotation = Quaternion.LookRotation(lookAt, Vector3.up);
+            this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, rotation, 0.1f);
+        }else{
+            this.gameObject.GetComponent<Rigidbody>().AddForce(force);
+            Vector3 lookAt = this.gameObject.GetComponent<Rigidbody>().velocity;
+            Quaternion rotation = Quaternion.LookRotation(lookAt, Vector3.up);
+            this.gameObject.transform.rotation = Quaternion.Slerp(this.gameObject.transform.rotation, rotation, 0.1f);
+        }
+        
+    }
     private Vector3 AvoidTerrian(){
         int count = 0;
         Vector3 avg = new Vector3(0, 0, 0);
@@ -46,99 +70,30 @@ public class BoidBehavior : MonoBehaviour
         return new Vector3(0, 0, 0);
     }
 
-    private GameObject[] NearbyAgents(){
-        Collider[] hitColliders = Physics.OverlapSphere(this.gameObject.transform.position, sightDistance);
-        List<GameObject> otherAgents = new List<GameObject>();
-        foreach(Collider collider in hitColliders){
-            otherAgents.Add(collider.gameObject);
-        }
 
-        return otherAgents.ToArray();
-    }
-    private Vector3 FindSeparation(GameObject[] agents){
-        Vector3 avoidance = new Vector3(0.0f, 0.0f, 0.0f);
-        foreach(GameObject agent in agents){ //If the two velocities intersect, move the current agent away from the other agent
-            var temp = this.transform.position - agent.transform.position;
-            avoidance += temp;
-        }
-        avoidance = avoidance / (agents.Length-1);
-        //avoidance.Normalize();
-        return avoidance;
-    }
-
-    private Vector3 FindAlignment(GameObject[] agents){
-        Vector3 avg = new Vector3(0.0f, 0.0f, 0.0f);
-        foreach(GameObject agent in agents){
-            avg += agent.transform.forward;
-        }
-        return avg / agents.Length;
-    }
-
-    private Vector3 MoveToAttract(){
-        Vector3 result = (attractor.transform.position - this.transform.position);
-        result.Normalize();
-        return result;
-    }
-
-    private Vector3 FindCohesion(GameObject[] agents){
-        Vector3 centeroid = new Vector3(0.0f, 0.0f, 0.0f);
-        foreach(GameObject agent in agents){
-            centeroid += agent.transform.position;
-        }
-        //centeroid += this.transform.position;
-        centeroid = centeroid / (agents.Length);
-        Vector3 direction =  centeroid - this.transform.position;
-        direction.Normalize();
-        return direction;
-    }
     // Start is called before the first frame update
     void Start()
     {
         GameObject child = transform.GetChild(0).gameObject;
         child.transform.up = this.transform.forward; //This is a hack to make the cones face the direction that it is flying. We may adjust it if we use a better mesh
     }
-    /*
+    void OnTriggerEnter(Collider otherCollider){
+        Instantiate(explosion, this.gameObject.transform.position, Quaternion.identity);
+        Destroy(this.gameObject);
+    }
+    public void die(){
+        this.gameObject.GetComponent<Rigidbody>().useGravity = true;
+        this.gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
+        
+        deathStart = Time.time;
+        isDead = true;
+        
+    }
     void FixedUpdate(){
-        GameObject[] agents = NearbyAgents();
-
-        Vector3 steeringForce;
-        if(agents.Length > 1){ //NearbyAgents() will always contain the current agent. We need to have the agent Length > 1
-            Vector3 sep = FindSeparation(agents);
-            steeringForce = sep*speed - this.gameObject.GetComponent<Rigidbody>().velocity;
-            //steeringForce = max(steeringForce, maxForce);
-            this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce * sepStrength);
-            
-            Vector3 alig = FindAlignment(agents);
-            steeringForce = alig*speed - this.gameObject.GetComponent<Rigidbody>().velocity;
-            //steeringForce = max(steeringForce, maxForce);
-            this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce * aligStrength);
-
-            Vector3 cohes = FindCohesion(agents);
-            steeringForce = cohes*speed - this.gameObject.GetComponent<Rigidbody>().velocity;
-            //steeringForce = max(steeringForce, maxForce);
-            this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce * cohesStrength);
-        }    
-
-        var desiredVelocity = MoveToAttract();
-        steeringForce = desiredVelocity * speed- this.gameObject.GetComponent<Rigidbody>().velocity;
-        //steeringForce = max(steeringForce, maxForce);
-        this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce *atractStrength);
-
 
         
-        desiredVelocity = AvoidTerrian();
-        steeringForce = desiredVelocity * speed- this.gameObject.GetComponent<Rigidbody>().velocity;
-        //steeringForce = max(steeringForce, maxForce);
-        this.gameObject.GetComponent<Rigidbody>().AddForce(steeringForce *avdTerrnStrength);
+    }
 
-        Vector3 lookAt = this.gameObject.GetComponent<Rigidbody>().velocity;
-        Quaternion rotation = Quaternion.LookRotation(lookAt, Vector3.up);
-
-        GameObject child = transform.GetChild(0).gameObject;
-        child.transform.rotation = Quaternion.Slerp(child.transform.rotation, rotation, 0.1f);
-
-        
-    }*/
 
     // Update is called once per frame
     void Update()

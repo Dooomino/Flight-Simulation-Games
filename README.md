@@ -9,3 +9,5 @@
 - [ ] Game State / Loading / Saving
 - [ ] Menus / HUD
 
+## Attribution
+- Explosion FXs: https://assetstore.unity.com/packages/vfx/particles/fire-explosions/fx-explosion-pack-30102

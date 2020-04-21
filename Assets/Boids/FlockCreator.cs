@@ -20,15 +20,21 @@ public class FlockCreator : MonoBehaviour
     public int numPoints = 100;
 
     public float sightDistance = 5.0f;
+    [Range(-1.0f, 1.0f)]
+    public float sightAngle = 0.0f; //dot product Increasing this number will decrease the boid's POV. A sight angle of 0.0 gives it 90 deg of view from the forward vector
+    private Vector3[] sightRays;
     private GameObject[] agents;
 
     //GPU stuff
     private ComputeBuffer posBuffer;
     private ComputeBuffer velBuffer;
     private ComputeBuffer resultBuffer;
+
     private Vector3[] resultData;
     [SerializeField] ComputeShader computeShader;
     private int kernelHandle;
+    public float sightRadius = 5.0f;
+    public LayerMask terrianLayer;
     private Vector3[] DrawSphere(){
         
         IEnumerable<float> indicies = Enumerable.Range(0, numPoints).Select(x => (float)x + 0.5f);
@@ -75,16 +81,14 @@ public class FlockCreator : MonoBehaviour
             GameObject currentAgent = Instantiate(agent, pos, Quaternion.identity);
             currentAgent.transform.parent = this.transform;
             
-            agents[i] = currentAgent;
         }
 
 
         kernelHandle = computeShader.FindKernel("CSMain");
 
-        posBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
-        velBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
-        resultBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
-        resultData = new Vector3[numAgents];
+        sightRays = DrawSphere();
+
+        
     }
 
     private void setUniforms(){
@@ -104,6 +108,12 @@ public class FlockCreator : MonoBehaviour
         computeShader.SetFloats("attractorPos", attractorPos);
     }
     private void setBuffer(){
+        posBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
+        velBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
+        resultBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
+        resultData = new Vector3[numAgents];
+
+
         posBuffer.SetData(agents.Select(x => x.transform.position).ToArray());
         velBuffer.SetData(agents.Select(x => x.GetComponent<Rigidbody>().velocity).ToArray());
 
@@ -114,11 +124,44 @@ public class FlockCreator : MonoBehaviour
     void runShader(){
         computeShader.Dispatch(kernelHandle, numAgents, 1, 1);
         resultBuffer.GetData(resultData);
-    }
 
+        posBuffer.Dispose();
+        velBuffer.Dispose();
+        resultBuffer.Dispose();
+
+        
+    }
+    //Taken from https://youtu.be/bqtqltqcQhw?t=384
+    /*Ideally, we should find a way to put this into the GPU since this is a _very_ expensive computation
+    One possible solution is take to dot product check and put it onto the GPU and return the valid rays. That way, we will
+    reduce the majority of the rays that we are actually checking
+     */
+    private Vector3 AvoidTerrian(GameObject agent){
+        Vector3 bestDir = agent.GetComponent<Rigidbody>().velocity.normalized;
+        float furthestDistance = 0;
+        RaycastHit hit;
+        
+        foreach(Vector3 ray in sightRays){
+            if(Vector3.Dot(ray, agent.GetComponent<Rigidbody>().velocity) >= sightAngle){
+                if(Physics.SphereCast(agent.gameObject.transform.position, sightRadius, ray, out hit, sightDistance, terrianLayer)){
+                    
+                    if(hit.distance > furthestDistance){
+                        bestDir = ray;
+                        furthestDistance = hit.distance;
+                    }
+                }else{
+                    return bestDir;
+                }
+
+            }
+        }
+        return bestDir;
+    }
     private void moveAgents(){
         for(int i = 0; i < numAgents; i ++){
-            agents[i].GetComponent<Rigidbody>().AddForce(resultData[i]);
+            Vector3 temp = AvoidTerrian(agents[i]);
+            Vector3 avoidForce = temp * speed - agents[i].GetComponent<Rigidbody>().velocity;
+            agents[i].GetComponent<BoidBehavior>().Move(resultData[i]+avoidForce);
         }
     }
     // Update is called once per frame
@@ -128,6 +171,11 @@ public class FlockCreator : MonoBehaviour
     }
 
     void FixedUpdate(){
+        numAgents = this.gameObject.transform.childCount;
+        agents = new GameObject[numAgents];
+        for(int i = 0; i < numAgents; i ++){
+            agents[i] = this.gameObject.transform.GetChild(i).gameObject;
+        }
         setUniforms();
         setBuffer();
         runShader();
