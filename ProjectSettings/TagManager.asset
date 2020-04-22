@@ -6,6 +6,8 @@ TagManager:
   tags:
   - GUI_Speed
   - GUI_Height
+  - Missile
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -18,7 +20,7 @@ TagManager:
   - Agents
   - Terrian
   - Player
-  - 
+  - Player_projectile
   - 
   - 
   - 

@@ -16,17 +16,24 @@ public class FlyController : MonoBehaviour
     public TMP_Text text_attitude; 
     
     public GameObject bulletsPrefab;
+    public GameObject missilePrefab;
     public float bulletSpeed = 200.0f;
+    public float missileSpeed = 500.0f;
 
     Vector3[] offsets = new Vector3[2];
 
     public ParticleSystem burst;
+
+    float lastFire;
+    public float cooldown = 0.2f;
+    private float timer = 0;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         offsets[0] = new Vector3(-0.2f,0.5f,-0.5f);
         offsets[1] = new Vector3(0.2f,0.5f,-0.5f);
-
+        lastFire = Time.deltaTime;
     }
     // Update is called once per frame
     void Update()
@@ -73,16 +80,39 @@ public class FlyController : MonoBehaviour
 
         offsets[0] = Vector3.Slerp(offsets[0],new Vector3(offsets[0].x,0.5f+-rawRoll/2,offsets[0].z),Time.deltaTime);
         offsets[1] = Vector3.Slerp(offsets[1],new Vector3(offsets[1].x,0.5f+rawRoll/2,offsets[1].z),Time.deltaTime);
-        if(Input.GetButton("Fire1")){
-            GameObject bullet1 = Instantiate(bulletsPrefab,transform.position + offsets[0],transform.rotation);
-            GameObject bullet2 = Instantiate(bulletsPrefab,transform.position + offsets[1],transform.rotation);
-            bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.forward*accSpeed*bulletSpeed,rb.velocity));
-            bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*-transform.up*liftForce,rb.velocity));
-            bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.forward*accSpeed*bulletSpeed,rb.velocity));
-            bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*-transform.up*liftForce,rb.velocity));
+       
+       // decrement the time for cool down
+        if(timer > 0){
+            timer -= Time.deltaTime;
+        }
+        // lock at zero if clear
+        if(timer <0){
+            timer = 0;
+        }
 
-            Destroy(bullet1,3.0f);
-            Destroy(bullet2,3.0f);
+        if(Input.GetButton("Fire1") && timer == 0){
+                GameObject bullet1 = Instantiate(bulletsPrefab,transform.position + offsets[0],transform.rotation);
+                GameObject bullet2 = Instantiate(bulletsPrefab,transform.position + offsets[1],transform.rotation);
+                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
+                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.forward*accSpeed*bulletSpeed,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.rotation*transform.up*liftForce,rb.velocity));
+
+                Destroy(bullet1,3.0f);
+                Destroy(bullet2,3.0f);
+                // reset timer
+                timer = cooldown;
+        }
+
+        if(Input.GetButton("Fire2")){
+            if(!GameObject.FindWithTag("Missile")){
+                Vector3 offset = new Vector3(0.2f,0.1f,0);
+                GameObject missile = Instantiate(missilePrefab,transform.position + offset,transform.rotation);
+                missile.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*missileSpeed,rb.velocity),ForceMode.Acceleration);
+                missile.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity),ForceMode.Acceleration);
+
+                Destroy(missile,5.0f);
+            }
         }
 
         if(Input.GetKey(KeyCode.LeftShift)){
