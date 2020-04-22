@@ -19,6 +19,8 @@ public class FlyController : MonoBehaviour
     public float bulletSpeed = 200.0f;
 
     Vector3[] offsets = new Vector3[2];
+
+    public ParticleSystem burst;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -87,6 +89,10 @@ public class FlyController : MonoBehaviour
             rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
             rb.AddForce(-transform.forward*accSpeed,ForceMode.Acceleration);
             rb.AddForce(transform.rotation*transform.up*liftForce,ForceMode.Acceleration);
+            burst.Play();
+        }else{
+            if(burst.isPlaying)
+                burst.Stop();
         }
         rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
 
