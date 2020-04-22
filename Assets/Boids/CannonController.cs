@@ -7,55 +7,58 @@ public class CannonController : MonoBehaviour
     public GameObject player;
 
     private GameObject stand;
-    private GameObject outerBarrel;
-    private GameObject innerBarrel;
+    private GameObject outerBarrelLeft;
+    private GameObject innerBarrelLeft;
 
+    private GameObject muzzleFlashLeft;
+
+    private GameObject outerBarrelRight;
+    private GameObject innerBarrelRight;
+    
+    private GameObject muzzleFlashRight;
     private GameObject fireLocation;
     private Animator animatorController;
     public LayerMask playerLayer;
-
+    private LineRenderer lineRenderer;
     private bool foundPlayer = false;
+
+    public GameObject muzzleFlash;
+    public GameObject playerExplosion;
     // Start is called before the first frame update
     void Start()
     {
         stand = this.transform.GetChild(0).gameObject;
-        outerBarrel = stand.transform.GetChild(0).gameObject;
-        innerBarrel = outerBarrel.transform.GetChild(0).gameObject;
-        fireLocation = outerBarrel.transform.GetChild(1).gameObject;
+        outerBarrelLeft = stand.transform.GetChild(0).gameObject;
+        innerBarrelLeft = outerBarrelLeft.transform.GetChild(0).gameObject;
+        muzzleFlashLeft = outerBarrelLeft.transform.GetChild(1).gameObject;
+
+
+        outerBarrelRight = stand.transform.GetChild(1).gameObject;
+        innerBarrelRight = outerBarrelRight.transform.GetChild(0).gameObject;
+        muzzleFlashRight = outerBarrelRight.transform.GetChild(1).gameObject;
+
         animatorController = this.gameObject.GetComponent<Animator>();
+        
     }
 
+    public void fire(){
+        Instantiate(muzzleFlash, muzzleFlashLeft.transform);
+        Instantiate(muzzleFlash, muzzleFlashRight.transform);
+        Instantiate(playerExplosion, player.transform);
+    }
     void FixedUpdate(){
-        Debug.DrawLine(outerBarrel.transform.position,  (fireLocation.transform.position.normalized) * 20, Color.yellow);
-        RaycastHit hitInfo = new RaycastHit();
-        if(!foundPlayer){
+        foundPlayer = false;
+
+        
+        RaycastHit hitInfo;
+        if(Physics.SphereCast(stand.transform.position, 5.0f, outerBarrelLeft.transform.up, out hitInfo, 45, playerLayer)){
+            Debug.DrawLine(stand.transform.position,  hitInfo.transform.position,  Color.green);
+            foundPlayer = true;
             
-            //Search for the player by casting a ray
-            if(Physics.SphereCast(outerBarrel.transform.position, 5.0f, fireLocation.transform.position.normalized, out hitInfo, 40.0f, playerLayer)){
-                foundPlayer = true;
-                animatorController.SetBool("foundEnemy", foundPlayer);
-                
-            }else{
-                foundPlayer = false;
-            }
+            
         }else{
-            if(Physics.SphereCast(outerBarrel.transform.position, 5.0f, fireLocation.transform.position.normalized, out hitInfo, 40.0f, playerLayer)){
-                foundPlayer = true;
-                
-            }else{
-                foundPlayer = false;
-            }
-                
-            
-            //if you've found the player, keep the barrel pointed at the player by rotating the base so it's looking at the player
-            
+            Debug.DrawLine(stand.transform.position,  outerBarrelLeft.transform.up* 45, Color.red);
         }
-
-        if(foundPlayer){
-            var lookAt = Quaternion.LookRotation(hitInfo.collider.gameObject.transform.position, Vector3.up);
-            stand.transform.rotation = Quaternion.Slerp(stand.transform.rotation, lookAt, 0.5f);
-        }
-
         animatorController.SetBool("foundEnemy", foundPlayer);
     }
     // Update is called once per frame
