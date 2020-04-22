@@ -35708,6 +35708,9 @@ MonoBehaviour:
   rollingSpeed: 100
   plane: {fileID: 594808559}
   text_attitude: {fileID: 349975278}
+  bulletsPrefab: {fileID: 6162799379223680113, guid: 15ca16d2b2daf5543bb5d1b5ff928f05,
+    type: 3}
+  bulletSpeed: 200
 --- !u!1 &1367705590
 GameObject:
   m_ObjectHideFlags: 0
