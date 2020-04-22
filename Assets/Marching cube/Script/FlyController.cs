@@ -12,7 +12,7 @@ public class FlyController : MonoBehaviour
     public float yawSpeed = 300f;
     private float yaw = 0f;
     public float rollingSpeed = 300f;
-
+    public Animator plane;
     public TMP_Text text_attitude; 
     
     void Start()
@@ -25,6 +25,27 @@ public class FlyController : MonoBehaviour
         
         float pitch = Mathf.Rad2Deg*Input.GetAxis("Vertical") * pitchSpeed * Time.deltaTime;
         float roll  = Mathf.Rad2Deg*Input.GetAxis("Horizontal") * rollingSpeed * Time.deltaTime;
+
+        if(pitch > 0){
+            plane.SetFloat("pitch_speed",1.0f);
+            plane.SetFloat("pitch_direction",1.0f);
+        }else if(pitch == 0){
+             plane.SetFloat("pitch_speed",-1.0f);
+        }else{ 
+            plane.SetFloat("pitch_speed",1.0f);
+            plane.SetFloat("pitch_direction",-1.0f);
+        }
+
+         if(roll > 0){
+            plane.SetFloat("roll_speed",1.0f);
+            plane.SetFloat("roll_direction",1.0f);
+        }else if(roll == 0){
+             plane.SetFloat("roll_speed",-1.0f);
+        }else{ 
+            plane.SetFloat("roll_speed",1.0f);
+            plane.SetFloat("roll_direction",-1.0f);
+        }
+
         if(Input.GetKey(KeyCode.E)){
             yaw = Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
         } else if(Input.GetKey(KeyCode.Q)){
@@ -34,24 +55,20 @@ public class FlyController : MonoBehaviour
             rb.angularVelocity = new Vector3(0,0,0);
         }
 
-        pitch = Mathf.Clamp(pitch,-30,30);
+        pitch = -Mathf.Clamp(pitch,-30,30);
         // yaw = Mathf.Clamp(yaw,-30,30);
         roll = Mathf.Clamp(roll,-30,30);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(pitch,yaw,-roll),Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(pitch,yaw,roll),Time.deltaTime);
 
 
         if(Input.GetKey(KeyCode.LeftShift)){
             rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
             float  apply_liftForce = 0;
-            if(pitch < 0){
-                apply_liftForce = liftForce * Mathf.Abs(pitch) ;
-            }else if (pitch == 0){
-                apply_liftForce = liftForce;
-            }else{
-                apply_liftForce = liftForce * -Mathf.Abs(pitch);
-            }
-            rb.AddForce(transform.forward*accSpeed,ForceMode.Acceleration);
+          
+            apply_liftForce = liftForce;
+           
+            rb.AddForce(-transform.forward*accSpeed,ForceMode.Acceleration);
             rb.AddForce(transform.rotation*transform.up*apply_liftForce,ForceMode.Acceleration);
         }
         rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
