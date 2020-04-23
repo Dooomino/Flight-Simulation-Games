@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+
+//Followed this https://github.com/brihernandez/MouseFlight/tree/master/Assets/MouseFlight
 public class FlyController : MonoBehaviour
 {
     Rigidbody rb;
@@ -28,12 +30,23 @@ public class FlyController : MonoBehaviour
     public float cooldown = 0.2f;
     private float timer = 0;
 
+    public Camera camera;
+    public GameObject mouseLoc;
+    private Transform camTransform;
+    private Transform mouseAim;
+    public float mouseSensitvity = 10;
+
+    public float dragStrength = 5.0f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         offsets[0] = new Vector3(-0.2f,0.5f,-0.5f);
         offsets[1] = new Vector3(0.2f,0.5f,-0.5f);
         lastFire = Time.deltaTime;
+
+        camTransform = camera.transform;
+        mouseAim = mouseLoc.transform;
     }
     // Update is called once per frame
     void Update()
@@ -72,11 +85,11 @@ public class FlyController : MonoBehaviour
             rb.angularVelocity = new Vector3(0,0,0);
         }
 
-        pitch = -Mathf.Clamp(pitch,-30,30);
+        //pitch = -Mathf.Clamp(pitch,-30,30);
         // yaw = Mathf.Clamp(yaw,-30,30);
-        roll = Mathf.Clamp(roll,-30,30);
+        //roll = Mathf.Clamp(roll,-30,30);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(pitch,yaw,roll),Time.deltaTime);
+        //transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(pitch,yaw,roll),Time.deltaTime);
 
         offsets[0] = Vector3.Slerp(offsets[0],new Vector3(offsets[0].x,0.5f+-rawRoll/2,offsets[0].z),Time.deltaTime);
         offsets[1] = Vector3.Slerp(offsets[1],new Vector3(offsets[1].x,0.5f+rawRoll/2,offsets[1].z),Time.deltaTime);
@@ -114,16 +127,39 @@ public class FlyController : MonoBehaviour
                 Destroy(missile,5.0f);
             }
         }
+        
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitvity;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitvity;
 
+        mouseAim.Rotate(camTransform.right, mouseY, Space.World);
+        mouseAim.Rotate(camTransform.up, mouseX, Space.World);
+        Debug.DrawLine(transform.position, -mouseAim.forward.normalized * 20.0f, Color.red);
+
+
+        //Drag calucations https://en.wikipedia.org/wiki/Drag_equation
+        Vector3 dragForce = new Vector3(1.0f/2.0f * rb.velocity.x*rb.velocity.x*-1,
+                                    1.0f/2.0f * rb.velocity.y*rb.velocity.y*-1,
+                                    1.0f/2.0f * rb.velocity.z * rb.velocity.z*-1);
+
+        //rb.AddForce(dragForce, ForceMode.Acceleration);
+        
+        
         if(Input.GetKey(KeyCode.LeftShift)){
-            rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
-            rb.AddForce(-transform.forward*accSpeed,ForceMode.Acceleration);
-            rb.AddForce(transform.rotation*transform.up*liftForce,ForceMode.Acceleration);
+            //rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
+            rb.velocity = -mouseAim.forward.normalized * accSpeed;
+            
+
             burst.Play();
-        }else{
+        }else if(Input.GetKey(KeyCode.LeftControl)){
+            rb.AddForce(mouseAim.forward*accSpeed,ForceMode.Acceleration);
             if(burst.isPlaying)
                 burst.Stop();
         }
+
+
+        
+        //camTransform.forward = this.gameObject.transform.forward;
+
         rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
 
         text_attitude.text = transform.position.y.ToString();
