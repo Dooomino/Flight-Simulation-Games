@@ -17,6 +17,7 @@ public class ScoreData : MonoBehaviour
     public void addScore(int addition){
         score += addition;
         this.gameObject.GetComponent<TextMeshProUGUI>().text = "Score: " + score;
+        Debug.Log(score);
     }
     // Update is called once per frame
     void Update()

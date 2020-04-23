@@ -10,6 +10,8 @@ public class MissileController : MonoBehaviour
     private float currentTime;
     public float sightRadius = 5.0f;
     public float rocketForce = 5.0f;
+
+    public GameObject explosionEffect;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +28,9 @@ public class MissileController : MonoBehaviour
         Detonate();
     }
     private void Detonate(){
+        var explosion = Instantiate(explosionEffect, this.gameObject.transform.position, Quaternion.identity);
+
+        explosion.transform.localScale = new Vector3(explosionRadius, explosionRadius, explosionRadius);
         Destroy(this.gameObject);
     }
     void FixedUpdate(){

@@ -8,7 +8,7 @@ public class AgentStats : MonoBehaviour, Stats
     public int maxHealth = 100;
     public int currentHealth;
 
-    [SerializeField] public GameObject scoreText;
+    public GameObject scoreText;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,10 +18,14 @@ public class AgentStats : MonoBehaviour, Stats
     public void takeDamage(int damage){
         currentHealth -= damage;
         if(currentHealth <= 0 && !this.gameObject.GetComponent<BoidBehavior>().isDead){
-            this.gameObject.GetComponent<BoidBehavior>().die();
+            Debug.Log("I got here");
+            scoreText.GetComponent<ScoreData>().addScore(10);
             if(null != scoreText){
-                scoreText.GetComponent<ScoreData>().addScore(10);
+                
+                
             }
+            this.gameObject.GetComponent<BoidBehavior>().die();
+            
         }
         
     }

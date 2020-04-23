@@ -78,10 +78,13 @@ public class BoidBehavior : MonoBehaviour
         child.transform.up = this.transform.forward; //This is a hack to make the cones face the direction that it is flying. We may adjust it if we use a better mesh
     }
     void OnTriggerEnter(Collider otherCollider){
-        Instantiate(explosion, this.gameObject.transform.position, Quaternion.identity);
-        Destroy(this.gameObject);
+        if(this.gameObject.GetComponent<CapsuleCollider>().isTrigger){
+            Instantiate(explosion, this.gameObject.transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
+        }
     }
     public void die(){
+        Debug.Log("test");
         this.gameObject.GetComponent<Rigidbody>().useGravity = true;
         this.gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
         

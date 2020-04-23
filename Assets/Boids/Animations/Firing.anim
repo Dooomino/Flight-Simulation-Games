@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Tracking
+  m_Name: Firing
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -370,7 +370,8 @@ AnimationClip:
   - time: 0.18333334
     functionName: fire
     data: 
-    objectReferenceParameter: {fileID: 0}
+    objectReferenceParameter: {fileID: 11500000, guid: fbb2451aac7f6834dbe4c1f95262daf3,
+      type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

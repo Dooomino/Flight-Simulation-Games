@@ -13,9 +13,9 @@ public class BulletController : MonoBehaviour
         startTime = Time.time;
     }
     void OnTriggerEnter(Collider otherCollider){
-        Debug.Log("Hit");
-        if(otherCollider.gameObject.layer == enemyLayer){
-            otherCollider.gameObject.GetComponent<Stats>().takeDamage(10);
+        if(otherCollider.gameObject.layer == LayerMask.NameToLayer("Agents")){
+            otherCollider.gameObject.GetComponent<Stats>().takeDamage(50);
+            Debug.Log("Hit");
         }
 
         Destroy(this.gameObject);
