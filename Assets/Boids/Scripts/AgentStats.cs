@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-public class AgentStats : MonoBehaviour
+public class AgentStats : MonoBehaviour, Stats
 {
 
     public int maxHealth = 100;
