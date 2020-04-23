@@ -48,6 +48,7 @@ public class CannonController : MonoBehaviour
 
 
         Instantiate(playerExplosion, player.transform.position, Quaternion.identity);
+        player.GetComponent<Stats>().takeDamage(50);
     }
     void FixedUpdate(){
         foundPlayer = false;
