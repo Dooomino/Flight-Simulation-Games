@@ -16,4 +16,4 @@
 
 - Explosion Effect: https://opengameart.org/content/synthesized-explosion
 
-- Sword&Shield Icon: https://www.hiclipart.com/free-transparent-background-png-clipart-thvnb/download
+- Sword Icon: https://flyclipart.com/history-swords-crossed-png-icon-free-download-crossed-swords-png-675555#
