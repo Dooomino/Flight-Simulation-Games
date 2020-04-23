@@ -44,7 +44,7 @@ public class CannonController : MonoBehaviour
     public void fire(){
         Instantiate(muzzleFlash, muzzleFlashLeft.transform);
         Instantiate(muzzleFlash, muzzleFlashRight.transform);
-        Instantiate(playerExplosion, player.transform);
+        Instantiate(playerExplosion, player.transform.position, Quaternion.identity);
     }
     void FixedUpdate(){
         foundPlayer = false;

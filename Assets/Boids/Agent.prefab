@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
-  currentHealth: 0
+  currentHealth: 100
   scoreText: {fileID: 0}
 --- !u!1001 &6213507574771499572
 PrefabInstance:
