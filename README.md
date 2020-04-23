@@ -2,12 +2,16 @@
 
 ## Requirements
 - [X] Enviornment Creation
-- [ ] Character Animantion (via MechAnim)
+- [X] Character Animantion (via MechAnim)
 - [X] Physics / Collision
-- [ ] User Input
+- [X] User Input
 - [X] Enemies and Enemy AI
 - [ ] Game State / Loading / Saving
-- [ ] Menus / HUD
+- [X] Menus / HUD
 
 ## Attribution
 - Explosion FXs: https://assetstore.unity.com/packages/vfx/particles/fire-explosions/fx-explosion-pack-30102
+
+- Music: https://opengameart.org/content/boss-theme-1
+
+- Explosion Effect: https://opengameart.org/content/synthesized-explosion
