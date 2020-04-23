@@ -632,11 +632,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 466990849608196795, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: field of view
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990849608196795, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: near clip plane
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990849608196795, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: far clip plane
+      value: 100000
+      objectReference: {fileID: 0}
     - target: {fileID: 466990849659760824, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
       propertyPath: text_attitude
       value: 
       objectReference: {fileID: 1473051097}
+    - target: {fileID: 466990849659760824, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: liftForce
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990849659760824, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: accSpeed
+      value: 1.1
+      objectReference: {fileID: 0}
     - target: {fileID: 466990849659760826, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -650,7 +675,7 @@ PrefabInstance:
     - target: {fileID: 466990849659760826, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 28
+      value: 1104
       objectReference: {fileID: 0}
     - target: {fileID: 466990849659760826, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
@@ -701,6 +726,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: player
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990850666073926, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: m_SpotAngle
+      value: 89.70046
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990850666073926, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: m_InnerSpotAngle
+      value: 52.31172
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990850666073926, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: m_Range
+      value: 0.76
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990850666073928, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: m_Name
+      value: Spot Light
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e98195a44de8cac499ab5286327366b8, type: 3}
