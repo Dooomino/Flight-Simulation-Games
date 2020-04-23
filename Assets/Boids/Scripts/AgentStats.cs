@@ -18,12 +18,8 @@ public class AgentStats : MonoBehaviour, Stats
     public void takeDamage(int damage){
         currentHealth -= damage;
         if(currentHealth <= 0 && !this.gameObject.GetComponent<BoidBehavior>().isDead){
-            Debug.Log("I got here");
-            scoreText.GetComponent<ScoreData>().addScore(10);
-            if(null != scoreText){
-                
-                
-            }
+            
+            scoreText.GetComponent<ScoreData>().addScore(10);    
             this.gameObject.GetComponent<BoidBehavior>().die();
             
         }

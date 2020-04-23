@@ -13,9 +13,9 @@ public class BulletController : MonoBehaviour
         startTime = Time.time;
     }
     void OnTriggerEnter(Collider otherCollider){
+        //Deal damage to the agent if it hits
         if(otherCollider.gameObject.layer == LayerMask.NameToLayer("Agents")){
             otherCollider.gameObject.GetComponent<Stats>().takeDamage(50);
-            Debug.Log("Hit");
         }
 
         Destroy(this.gameObject);

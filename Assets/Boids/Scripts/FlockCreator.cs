@@ -38,6 +38,7 @@ public class FlockCreator : MonoBehaviour
     private int kernelHandle;
     public float sightRadius = 5.0f;
     public LayerMask terrianLayer;
+    //https://stackoverflow.com/questions/9600801/evenly-distributing-n-points-on-a-sphere/44164075#44164075
     private Vector3[] DrawSphere(){
         
         IEnumerable<float> indicies = Enumerable.Range(0, numPoints).Select(x => (float)x + 0.5f);
@@ -62,15 +63,6 @@ public class FlockCreator : MonoBehaviour
     void Start()
     {
         agents = new GameObject[numAgents];
-
-        agent.GetComponent<BoidBehavior>().attractor = attractor;
-        agent.GetComponent<BoidBehavior>().sepStrength = sepStrength;
-        agent.GetComponent<BoidBehavior>().cohesStrength = cohesStrength;
-        agent.GetComponent<BoidBehavior>().aligStrength = aligStrength;
-        agent.GetComponent<BoidBehavior>().atractStrength = atractStrength;
-        agent.GetComponent<BoidBehavior>().speed = speed;
-
-        
         agent.layer = LayerMask.NameToLayer("Agents");
         
 
@@ -94,7 +86,7 @@ public class FlockCreator : MonoBehaviour
 
         
     }
-
+    //Think of thses as the uniform variables in OpenGL.
     private void setUniforms(){
         
         computeShader.SetFloat("sepStrength", sepStrength);
@@ -111,24 +103,31 @@ public class FlockCreator : MonoBehaviour
         attractorPos[2] = attractor.gameObject.transform.position.z;
         computeShader.SetFloats("attractorPos", attractorPos);
     }
+
+    //Send the Flock's positions and velocities to the GPU
     private void setBuffer(){
+
+        //Initalization
         posBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
         velBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
         resultBuffer = new ComputeBuffer(numAgents, sizeof(float)*3);
         resultData = new Vector3[numAgents];
 
-
-        posBuffer.SetData(agents.Select(x => x.transform.position).ToArray());
+        //Set the agent's position and velocity to the buffer
+        posBuffer.SetData(agents.Select(x => x.transform.position).ToArray()); 
         velBuffer.SetData(agents.Select(x => x.GetComponent<Rigidbody>().velocity).ToArray());
 
+        //Send the buffers to the GPU
         computeShader.SetBuffer(kernelHandle, "posBuffer", posBuffer);
         computeShader.SetBuffer(kernelHandle, "velBuffer", velBuffer);
         computeShader.SetBuffer(kernelHandle, "resultBuffer", resultBuffer);
     } 
     void runShader(){
-        computeShader.Dispatch(kernelHandle, numAgents, 1, 1);
+        computeShader.Dispatch(kernelHandle, numAgents, 1, 1); //Launch the compute shader
+
         resultBuffer.GetData(resultData);
 
+        //Clean up
         posBuffer.Dispose();
         velBuffer.Dispose();
         resultBuffer.Dispose();
@@ -144,7 +143,7 @@ public class FlockCreator : MonoBehaviour
         Vector3 bestDir = agent.GetComponent<Rigidbody>().velocity.normalized;
         float furthestDistance = 0;
         RaycastHit hit;
-        
+        //Find the ray that is farthest away from the collider and return that ray
         foreach(Vector3 ray in sightRays){
             if(Vector3.Dot(ray, agent.GetComponent<Rigidbody>().velocity) >= sightAngle){
                 if(Physics.SphereCast(agent.gameObject.transform.position, sightRadius, ray, out hit, sightDistance, terrianLayer)){

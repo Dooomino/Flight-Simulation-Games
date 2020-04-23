@@ -42,14 +42,17 @@ public class CannonController : MonoBehaviour
     }
 
     public void fire(){
+        //Make explosions in front of the cannon
         Instantiate(muzzleFlash, muzzleFlashLeft.transform);
         Instantiate(muzzleFlash, muzzleFlashRight.transform);
+
+
         Instantiate(playerExplosion, player.transform.position, Quaternion.identity);
     }
     void FixedUpdate(){
         foundPlayer = false;
 
-        
+        //Check if the cannon can see the layer
         RaycastHit hitInfo;
         if(Physics.SphereCast(stand.transform.position, 5.0f, outerBarrelLeft.transform.up, out hitInfo, 45, playerLayer)){
             Debug.DrawLine(stand.transform.position,  hitInfo.transform.position,  Color.green);
