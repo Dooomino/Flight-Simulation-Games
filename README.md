@@ -15,3 +15,5 @@
 - Music: https://opengameart.org/content/boss-theme-1
 
 - Explosion Effect: https://opengameart.org/content/synthesized-explosion
+
+- Sword&Shield Icon: https://www.hiclipart.com/free-transparent-background-png-clipart-thvnb/download
