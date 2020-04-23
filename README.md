@@ -15,3 +15,5 @@
 - Music: https://opengameart.org/content/boss-theme-1
 
 - Explosion Effect: https://opengameart.org/content/synthesized-explosion
+
+- Sword Icon: https://flyclipart.com/history-swords-crossed-png-icon-free-download-crossed-swords-png-675555#
