@@ -73,7 +73,7 @@ public class FlockCreator : MonoBehaviour
             pos.x *= UnityEngine.Random.value * spawnRadius;
             pos.y *= UnityEngine.Random.value * spawnRadius;
             pos.z *= UnityEngine.Random.value * spawnRadius;
-            GameObject currentAgent = Instantiate(agent, pos, Quaternion.identity);
+            GameObject currentAgent = Instantiate(agent, this.transform.position, Quaternion.identity);
             currentAgent.GetComponent<AgentStats>().scoreText = scoreText;
             currentAgent.transform.parent = this.transform;
             

@@ -32,7 +32,6 @@ public class FlyController : MonoBehaviour
     private float timer = 0;
 
     public Camera camera;
-    public GameObject mouseLoc;
     private Transform camTransform;
     private Transform mouseAim;
     public float mouseSensitvity = 10;
@@ -47,7 +46,6 @@ public class FlyController : MonoBehaviour
         lastFire = Time.deltaTime;
 
         //camTransform = camera.transform;
-        mouseAim = mouseLoc.transform;
 
         planeTransform = this.gameObject.transform.GetChild(0);
     }
@@ -90,9 +88,8 @@ public class FlyController : MonoBehaviour
         
         Quaternion desiredRot = Quaternion.Euler(-pitch, yaw, roll);
         
-        //planeTransform.localRotation = Quaternion.Slerp(planeTransform.localRotation, desiredRot, Time.deltaTime);
-        
-
+        this.transform.localRotation = Quaternion.Slerp(this.transform.localRotation, desiredRot, Time.deltaTime);
+        //this.transform.Rotate(-pitch, yaw, roll, Space.Self);
         offsets[0] = Vector3.Slerp(offsets[0],new Vector3(offsets[0].x,0.5f+-rawRoll/2,offsets[0].z),Time.deltaTime);
         offsets[1] = Vector3.Slerp(offsets[1],new Vector3(offsets[1].x,0.5f+rawRoll/2,offsets[1].z),Time.deltaTime);
        
@@ -145,7 +142,7 @@ public class FlyController : MonoBehaviour
         
         if(Input.GetKey(KeyCode.LeftShift)){
             //rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
-            //rb.AddForce(-mouseAim.forward*accSpeed,ForceMode.Acceleration);
+            rb.AddForce(-this.transform.forward*accSpeed,ForceMode.Acceleration);
             
 
             burst.Play();
