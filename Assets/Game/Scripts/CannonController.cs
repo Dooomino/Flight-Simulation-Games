@@ -19,11 +19,12 @@ public class CannonController : MonoBehaviour
     private GameObject fireLocation;
     private Animator animatorController;
     public LayerMask playerLayer;
-    private LineRenderer lineRenderer;
     private bool foundPlayer = false;
 
     public GameObject muzzleFlash;
     public GameObject playerExplosion;
+    public GameObject firingLocation;
+    public GameObject firingOrigin;
     // Start is called before the first frame update
     void Start()
     {
@@ -55,13 +56,13 @@ public class CannonController : MonoBehaviour
 
         //Check if the cannon can see the layer
         RaycastHit hitInfo;
-        if(Physics.SphereCast(stand.transform.position, 5.0f, outerBarrelLeft.transform.up, out hitInfo, 45, playerLayer)){
-            Debug.DrawLine(stand.transform.position,  hitInfo.transform.position,  Color.green);
+        if(Physics.SphereCast(firingOrigin.transform.position, 5.0f, firingLocation.transform.up, out hitInfo, 45, playerLayer)){
+            Debug.DrawLine(firingOrigin.transform.position,  hitInfo.transform.position,  Color.green);
             foundPlayer = true;
             
             
         }else{
-            Debug.DrawLine(stand.transform.position,  outerBarrelLeft.transform.up* 45, Color.red);
+            Debug.DrawLine(firingOrigin.transform.position,  firingLocation.transform.up* 45, Color.red);
         }
         animatorController.SetBool("foundEnemy", foundPlayer);
     }
