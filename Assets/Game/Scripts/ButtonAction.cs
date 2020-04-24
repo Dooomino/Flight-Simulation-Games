@@ -12,7 +12,7 @@ public class ButtonAction : MonoBehaviour
     }
 
     public void changeScene(){
-        SceneManager.LoadScene("Game/Scenes/Game");
+        SceneManager.LoadScene("Game");
     }
     // Update is called once per frame
     void Update()
