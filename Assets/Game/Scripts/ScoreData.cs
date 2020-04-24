@@ -5,14 +5,16 @@ using TMPro;
 public class ScoreData : MonoBehaviour
 {
 
-    int score;
+    static int score;
     // Start is called before the first frame update
     void Start()
     {
         score = 0;
         this.gameObject.GetComponent<TextMeshProUGUI>().text = "Score: " + score;
     }
-
+    public static int getScore(){
+        return score;
+    }
 
     public void addScore(int addition){
         score += addition;

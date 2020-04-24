@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class PlayerStats : MonoBehaviour, Stats
 {
     public int maxHealth = 100;
@@ -19,8 +19,13 @@ public class PlayerStats : MonoBehaviour, Stats
         }
     }
 
+    public int getHp(){
+        return currentHealth;
+    }
+
     private void die(){
-        Destroy(this.gameObject);
+        SceneManager.LoadScene("GameOver");
+        // Destroy(this.gameObject);
     }
     // Update is called once per frame
     void Update()

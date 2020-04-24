@@ -16,7 +16,7 @@ public class FlyController : MonoBehaviour
     public float rollingSpeed = 300f;
     public Animator plane;
     public TMP_Text text_attitude; 
-    
+
     public GameObject bulletsPrefab;
     public float bulletTTL = 20;
     public GameObject missilePrefab;
@@ -156,5 +156,11 @@ public class FlyController : MonoBehaviour
         }
 
         text_attitude.text = "Altitude: " + transform.position.y.ToString();
+    }
+
+    private void OnCollisionEnter(Collision other) {
+        if(other.gameObject.tag == "Ground"){
+            GetComponent<PlayerStats>().takeDamage(GetComponent<PlayerStats>().maxHealth);
+        }
     }
 }
