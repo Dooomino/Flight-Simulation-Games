@@ -94,10 +94,10 @@ public class FlyController : MonoBehaviour
         if(Input.GetButton("Fire1") && timer == 0){
                 GameObject bullet1 = Instantiate(bulletsPrefab,transform.position + offsets[0],Quaternion.Inverse(transform.rotation));
                 GameObject bullet2 = Instantiate(bulletsPrefab,transform.position + offsets[1],Quaternion.Inverse(transform.rotation));
-                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
-                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity));
-                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
-                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.rotation*transform.up*liftForce,rb.velocity));
+                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.forward*accSpeed*bulletSpeed,rb.velocity));
+                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.up*liftForce,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.forward*accSpeed*bulletSpeed,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.rotation*transform.up*liftForce,rb.velocity));
 
                 Destroy(bullet1,bulletTTL);
                 Destroy(bullet2,bulletTTL);
