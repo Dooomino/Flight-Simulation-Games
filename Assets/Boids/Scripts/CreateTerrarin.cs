@@ -13,10 +13,12 @@ public class CreateTerrarin : MonoBehaviour
 
     MeshCollider mc;
 
+    public bool dynamicUpdate = false;
     public bool isCube = true;
-    public int width = 16;
-    public int height = 16;
-    public int depth = 16;
+    public int width = 32;
+    public int height = 32;
+    public int depth = 32;
+
     float terrainSurface = 0.1f;
     public Vector3 scale = new Vector3(1.0f,1.0f,1.0f);
     float[,,] terrainMap;
@@ -24,7 +26,7 @@ public class CreateTerrarin : MonoBehaviour
     float xfac,yfac,zfac;
 
     [Range(0.1f,1)]
-    public float threshold = 16;
+    public float threshold = 0.3f;
     Mesh mesh;
     // Start is called before the first frame update
     void Start()
@@ -48,7 +50,9 @@ public class CreateTerrarin : MonoBehaviour
             depth = height = width;
             scale.y = scale.z = scaleF;
         }
-        // Create();
+        if(dynamicUpdate){
+            Create();
+        }
         
     }
 

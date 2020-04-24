@@ -37,7 +37,7 @@ public class FlyController : MonoBehaviour
     public float mouseSensitvity = 10;
 
     public float dragStrength = 5.0f;
-
+    private Transform planeTransform;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -45,8 +45,10 @@ public class FlyController : MonoBehaviour
         offsets[1] = new Vector3(0.2f,0.5f,-0.5f);
         lastFire = Time.deltaTime;
 
-        camTransform = camera.transform;
+        //camTransform = camera.transform;
         mouseAim = mouseLoc.transform;
+
+        planeTransform = this.gameObject.transform.GetChild(0);
     }
     // Update is called once per frame
     void Update()
@@ -81,15 +83,14 @@ public class FlyController : MonoBehaviour
         } else if(Input.GetKey(KeyCode.Q)){
             yaw = Mathf.Rad2Deg*-yawSpeed * Time.deltaTime;
         }
-        if(Input.GetKeyDown(KeyCode.R)){
-            rb.angularVelocity = new Vector3(0,0,0);
-        }
 
-        //pitch = -Mathf.Clamp(pitch,-30,30);
-        // yaw = Mathf.Clamp(yaw,-30,30);
-        //roll = Mathf.Clamp(roll,-30,30);
+        
 
-        //transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(pitch,yaw,roll),Time.deltaTime);
+        
+        Quaternion desiredRot = Quaternion.Euler(-pitch, yaw, roll);
+        
+        //planeTransform.localRotation = Quaternion.Slerp(planeTransform.localRotation, desiredRot, Time.deltaTime);
+        
 
         offsets[0] = Vector3.Slerp(offsets[0],new Vector3(offsets[0].x,0.5f+-rawRoll/2,offsets[0].z),Time.deltaTime);
         offsets[1] = Vector3.Slerp(offsets[1],new Vector3(offsets[1].x,0.5f+rawRoll/2,offsets[1].z),Time.deltaTime);
@@ -128,39 +129,38 @@ public class FlyController : MonoBehaviour
             }
         }
         
+        /*
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitvity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitvity;
 
         mouseAim.Rotate(camTransform.right, mouseY, Space.World);
         mouseAim.Rotate(camTransform.up, mouseX, Space.World);
-        Debug.DrawLine(transform.position, -mouseAim.forward.normalized * 20.0f, Color.red);
+        Debug.DrawLine(transform.position, -mouseAim.forward.normalized * 20.0f, Color.red);*/
 
 
-        //Drag calucations https://en.wikipedia.org/wiki/Drag_equation
-        Vector3 dragForce = new Vector3(1.0f/2.0f * rb.velocity.x*rb.velocity.x*-1,
-                                    1.0f/2.0f * rb.velocity.y*rb.velocity.y*-1,
-                                    1.0f/2.0f * rb.velocity.z * rb.velocity.z*-1);
 
         //rb.AddForce(dragForce, ForceMode.Acceleration);
         
         
         if(Input.GetKey(KeyCode.LeftShift)){
             //rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
-            rb.velocity = -mouseAim.forward.normalized * accSpeed;
+            //rb.AddForce(-mouseAim.forward*accSpeed,ForceMode.Acceleration);
             
 
             burst.Play();
         }else if(Input.GetKey(KeyCode.LeftControl)){
-            rb.AddForce(mouseAim.forward*accSpeed,ForceMode.Acceleration);
+            //rb.AddForce(mouseAim.forward*accSpeed,ForceMode.Acceleration);
             if(burst.isPlaying)
                 burst.Stop();
         }
 
 
         
-        //camTransform.forward = this.gameObject.transform.forward;
+        //camTransform.forward = -this.gameObject.transform.forward;
 
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
+        //camTransform.position = this.gameObject.transform.localPosition;
+
+        //rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
 
         text_attitude.text = transform.position.y.ToString();
     }
