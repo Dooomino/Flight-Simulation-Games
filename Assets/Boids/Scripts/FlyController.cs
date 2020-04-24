@@ -105,11 +105,11 @@ public class FlyController : MonoBehaviour
         }
 
         if(Input.GetButton("Fire1") && timer == 0){
-                GameObject bullet1 = Instantiate(bulletsPrefab,transform.position + offsets[0],transform.rotation);
-                GameObject bullet2 = Instantiate(bulletsPrefab,transform.position + offsets[1],transform.rotation);
+                GameObject bullet1 = Instantiate(bulletsPrefab,transform.position + offsets[0],Quaternion.Inverse(transform.rotation));
+                GameObject bullet2 = Instantiate(bulletsPrefab,transform.position + offsets[1],Quaternion.Inverse(transform.rotation));
                 bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
                 bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity));
-                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.forward*accSpeed*bulletSpeed,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
                 bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.rotation*transform.up*liftForce,rb.velocity));
 
                 Destroy(bullet1,3.0f);
@@ -121,7 +121,7 @@ public class FlyController : MonoBehaviour
         if(Input.GetButton("Fire2")){
             if(!GameObject.FindWithTag("Missile")){
                 Vector3 offset = new Vector3(0.2f,0.1f,0);
-                GameObject missile = Instantiate(missilePrefab,transform.position + offset,transform.rotation);
+                GameObject missile = Instantiate(missilePrefab,transform.position + offset,Quaternion.Inverse(transform.rotation));
                 missile.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*missileSpeed,rb.velocity),ForceMode.Acceleration);
                 missile.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity),ForceMode.Acceleration);
 

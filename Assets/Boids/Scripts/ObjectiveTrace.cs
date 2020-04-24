@@ -2,34 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// inspired by Original code https://forum.unity.com/threads/world-space-to-canvas-space.460185/
 public class ObjectiveTrace : MonoBehaviour
 {
     // Start is called before the first frame update
     public Camera cameraObj;
-
     public Transform obj;
 
+    public RectTransform canvas;
     public RectTransform objText;
 
     void Start()
     {
         
     }
-
-    // Update is called once per frame
     void Update()
     {
-        Vector2 viewportPos = cameraObj.WorldToViewportPoint(obj.position);
+        //Calculate the position of the UI element
+        //0,0 for the canvas is at the center of the screen, whereas 
+        //WorldToViewPortPoint treats the lower left corner as 0,0. 
+        //Because of this, you need to subtract the height / width of the 
+        //canvas * 0.5f to get the correct position.
  
-         //Calculate position considering percentage, using text size
-         
-         viewportPos.x *= objText.sizeDelta.x;
-         viewportPos.y *= objText.sizeDelta.y;
+        Vector2 viewPos=Camera.main.WorldToViewportPoint(obj.position);
+        Vector2 targetPos=new Vector2(
+            ((viewPos.x*canvas.sizeDelta.x)-(canvas.sizeDelta.x*0.5f)),
+            ((viewPos.y*canvas.sizeDelta.y)-(canvas.sizeDelta.y*0.5f)));
  
-         // Remove the 0.5 considering cavnas rectransform pivot.
-         viewportPos.x -= objText.sizeDelta.x * objText.pivot.x;
-         viewportPos.y -= objText.sizeDelta.y * objText.pivot.y;
-
-         objText.localPosition = viewportPos;
+        //now you can set the position of the ui element
+        objText.anchoredPosition=targetPos;
     }
 }
