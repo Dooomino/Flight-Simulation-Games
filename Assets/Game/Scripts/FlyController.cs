@@ -134,4 +134,10 @@ public class FlyController : MonoBehaviour
 
         text_attitude.text = "Altitude: " + transform.position.y.ToString();
     }
+
+     private void OnCollisionEnter(Collision other) {
+        if(other.gameObject.tag == "Ground"){
+            GetComponent<PlayerStats>().takeDamage(GetComponent<PlayerStats>().maxHealth);
+        }
+    }
 }

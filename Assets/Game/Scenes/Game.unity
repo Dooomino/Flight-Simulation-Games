@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -1678,7 +1678,6 @@ GameObject:
   - component: {fileID: 1173250957}
   - component: {fileID: 1173250956}
   - component: {fileID: 1173250955}
-  - component: {fileID: 1173250958}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -1734,19 +1733,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1173250958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1173250954}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a23f86582c3754f4db33e3545d58c181, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  highestScore: 0
 --- !u!1 &1229254467 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 466990849608196797, guid: e98195a44de8cac499ab5286327366b8,
@@ -2464,6 +2450,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1927251788}
   - component: {fileID: 1927251787}
+  - component: {fileID: 1927251789}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -2546,6 +2533,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 28.880001, y: -34.344, z: -3.736}
+--- !u!114 &1927251789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1927251786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a23f86582c3754f4db33e3545d58c181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highestScore: 0
 --- !u!1 &1972543743
 GameObject:
   m_ObjectHideFlags: 0
