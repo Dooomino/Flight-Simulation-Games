@@ -248,6 +248,16 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 64328535}
+    - target: {fileID: 4295983971170900584, guid: f9d0faf3b4f40664285019f38ceb97ad,
+        type: 3}
+      propertyPath: firingLocation
+      value: 
+      objectReference: {fileID: 1719853161}
+    - target: {fileID: 4295983971170900584, guid: f9d0faf3b4f40664285019f38ceb97ad,
+        type: 3}
+      propertyPath: firingOrigin
+      value: 
+      objectReference: {fileID: 2072714807}
     - target: {fileID: 4295983971170900586, guid: f9d0faf3b4f40664285019f38ceb97ad,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -325,6 +335,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9d0faf3b4f40664285019f38ceb97ad, type: 3}
+--- !u!1 &362480753 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4295983971224621275, guid: f9d0faf3b4f40664285019f38ceb97ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 460814656}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &411842738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -336,6 +352,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 466990849608196792, guid: e98195a44de8cac499ab5286327366b8,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.27
       objectReference: {fileID: 0}
     - target: {fileID: 466990849608196795, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
@@ -400,7 +421,7 @@ PrefabInstance:
     - target: {fileID: 466990849659760824, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
       propertyPath: accSpeed
-      value: 200
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 466990849659760824, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
@@ -415,7 +436,7 @@ PrefabInstance:
     - target: {fileID: 466990849659760824, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
       propertyPath: bulletSpeed
-      value: 1
+      value: 1.1
       objectReference: {fileID: 0}
     - target: {fileID: 466990849659760824, guid: e98195a44de8cac499ab5286327366b8,
         type: 3}
@@ -551,6 +572,16 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 64328535}
+    - target: {fileID: 4295983971170900584, guid: f9d0faf3b4f40664285019f38ceb97ad,
+        type: 3}
+      propertyPath: firingLocation
+      value: 
+      objectReference: {fileID: 362480753}
+    - target: {fileID: 4295983971170900584, guid: f9d0faf3b4f40664285019f38ceb97ad,
+        type: 3}
+      propertyPath: firingOrigin
+      value: 
+      objectReference: {fileID: 835293079}
     - target: {fileID: 4295983971170900586, guid: f9d0faf3b4f40664285019f38ceb97ad,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1131,6 +1162,18 @@ Terrain:
   m_GroupingID: 0
   m_RenderingLayerMask: 1
   m_AllowAutoConnect: 1
+--- !u!1 &835293079 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4295983971906418035, guid: f9d0faf3b4f40664285019f38ceb97ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 460814656}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &837592826 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4295983971224621275, guid: f9d0faf3b4f40664285019f38ceb97ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 1102556506}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &869434051
 GameObject:
   m_ObjectHideFlags: 0
@@ -1461,6 +1504,16 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 64328535}
+    - target: {fileID: 4295983971170900584, guid: f9d0faf3b4f40664285019f38ceb97ad,
+        type: 3}
+      propertyPath: firingLocation
+      value: 
+      objectReference: {fileID: 837592826}
+    - target: {fileID: 4295983971170900584, guid: f9d0faf3b4f40664285019f38ceb97ad,
+        type: 3}
+      propertyPath: firingOrigin
+      value: 
+      objectReference: {fileID: 1656757315}
     - target: {fileID: 4295983971170900586, guid: f9d0faf3b4f40664285019f38ceb97ad,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2157,6 +2210,18 @@ Terrain:
   m_GroupingID: 0
   m_RenderingLayerMask: 1
   m_AllowAutoConnect: 1
+--- !u!1 &1656757315 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4295983971906418035, guid: f9d0faf3b4f40664285019f38ceb97ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 1102556506}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1719853161 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4295983971224621275, guid: f9d0faf3b4f40664285019f38ceb97ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 353815263}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1826391969
 GameObject:
   m_ObjectHideFlags: 0
@@ -2557,6 +2622,12 @@ Terrain:
   m_GroupingID: 0
   m_RenderingLayerMask: 1
   m_AllowAutoConnect: 1
+--- !u!1 &2072714807 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4295983971906418035, guid: f9d0faf3b4f40664285019f38ceb97ad,
+    type: 3}
+  m_PrefabInstance: {fileID: 353815263}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2143087947
 GameObject:
   m_ObjectHideFlags: 0

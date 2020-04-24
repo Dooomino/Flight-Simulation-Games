@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
-//Followed this https://github.com/brihernandez/MouseFlight/tree/master/Assets/MouseFlight
 public class FlyController : MonoBehaviour
 {
     Rigidbody rb;
@@ -16,7 +14,7 @@ public class FlyController : MonoBehaviour
     public float rollingSpeed = 300f;
     public Animator plane;
     public TMP_Text text_attitude; 
-
+    
     public GameObject bulletsPrefab;
     public float bulletTTL = 20;
     public GameObject missilePrefab;
@@ -31,13 +29,6 @@ public class FlyController : MonoBehaviour
     public float cooldown = 0.2f;
     private float timer = 0;
 
-    public Camera camera;
-    private Transform camTransform;
-    private Transform mouseAim;
-    public float mouseSensitvity = 10;
-
-    public float dragStrength = 5.0f;
-    private Transform planeTransform;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -79,6 +70,9 @@ public class FlyController : MonoBehaviour
         } else if(Input.GetKey(KeyCode.Q)){
             yaw -= Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
         }
+        if(Input.GetKeyDown(KeyCode.R)){
+            rb.angularVelocity = new Vector3(0,0,0);
+        }
 
         if(Input.GetKeyDown(KeyCode.F)){
             yaw += 180f;
@@ -88,11 +82,8 @@ public class FlyController : MonoBehaviour
         // yaw = Mathf.Clamp(yaw,-30,30);
         roll = Mathf.Clamp(roll,-30,30);
 
-        
-        Quaternion desiredRot = Quaternion.Euler(-pitch, yaw, roll);
-        
-        this.transform.localRotation = Quaternion.Slerp(this.transform.localRotation, desiredRot, Time.deltaTime);
-        //this.transform.Rotate(-pitch, yaw, roll, Space.Self);
+        transform.rotation = Quaternion.Slerp(transform.rotation,Quaternion.Euler(pitch,yaw,roll),Time.deltaTime);
+
         offsets[0] = Vector3.Slerp(offsets[0],new Vector3(offsets[0].x,0.5f+-rawRoll/2,offsets[0].z),Time.deltaTime);
         offsets[1] = Vector3.Slerp(offsets[1],new Vector3(offsets[1].x,0.5f+rawRoll/2,offsets[1].z),Time.deltaTime);
        
@@ -129,38 +120,18 @@ public class FlyController : MonoBehaviour
                 Destroy(missile,5.0f);
             }
         }
-        
-        /*
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitvity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitvity;
 
-        mouseAim.Rotate(camTransform.right, mouseY, Space.World);
-        mouseAim.Rotate(camTransform.up, mouseX, Space.World);
-        Debug.DrawLine(transform.position, -mouseAim.forward.normalized * 20.0f, Color.red);*/
-
-
-
-        //rb.AddForce(dragForce, ForceMode.Acceleration);
-        
-        
         if(Input.GetKey(KeyCode.LeftShift)){
-            //rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
-            rb.AddForce(-this.transform.forward*accSpeed,ForceMode.Acceleration);
-            
-
+            rb.angularVelocity = Vector3.Slerp(rb.angularVelocity,new Vector3(0,0,0),Time.deltaTime);
+            rb.AddForce(-transform.forward*accSpeed,ForceMode.Acceleration);
+            rb.AddForce(transform.rotation*transform.up*liftForce,ForceMode.Acceleration);
             burst.Play();
-        }else if(Input.GetKey(KeyCode.LeftControl)){
-            //rb.AddForce(mouseAim.forward*accSpeed,ForceMode.Acceleration);
+        }else{
             if(burst.isPlaying)
                 burst.Stop();
         }
+        rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
 
         text_attitude.text = "Altitude: " + transform.position.y.ToString();
-    }
-
-    private void OnCollisionEnter(Collision other) {
-        if(other.gameObject.tag == "Ground"){
-            GetComponent<PlayerStats>().takeDamage(GetComponent<PlayerStats>().maxHealth);
-        }
     }
 }

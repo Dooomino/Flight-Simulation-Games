@@ -29,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 466990849608196797}
   m_LocalRotation: {x: -0, y: -0.9999589, z: 0.009075585, w: 0}
-  m_LocalPosition: {x: 0, y: 1, z: 1.3999996}
+  m_LocalPosition: {x: 0, y: 1.04, z: 1.3999996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 466990849659760826}
@@ -215,12 +215,16 @@ MonoBehaviour:
   text_attitude: {fileID: 0}
   bulletsPrefab: {fileID: 6162799379223680113, guid: 15ca16d2b2daf5543bb5d1b5ff928f05,
     type: 3}
+  bulletTTL: 20
   missilePrefab: {fileID: 847522187316572144, guid: 764b0a5348db7ef44846ed7fd6f73f0e,
     type: 3}
   bulletSpeed: 200
   missileSpeed: 100
   burst: {fileID: 3030652775238941153}
   cooldown: 0.2
+  camera: {fileID: 0}
+  mouseSensitvity: 10
+  dragStrength: 5
 --- !u!1 &466990850448644710
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,7 +312,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4916403922949038841}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1.33, z: 0.17}
+  m_LocalPosition: {x: 0, y: 0.96, z: 0.17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 466990849659760826}
