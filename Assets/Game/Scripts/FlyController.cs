@@ -44,10 +44,7 @@ public class FlyController : MonoBehaviour
         offsets[0] = new Vector3(-0.2f,0.5f,-0.5f);
         offsets[1] = new Vector3(0.2f,0.5f,-0.5f);
         lastFire = Time.deltaTime;
-
-        //camTransform = camera.transform;
-
-        planeTransform = this.gameObject.transform.GetChild(0);
+        yaw=0;
     }
     // Update is called once per frame
     void Update()
@@ -78,12 +75,18 @@ public class FlyController : MonoBehaviour
         }
 
         if(Input.GetKey(KeyCode.E)){
-            yaw = Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
+            yaw += Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
         } else if(Input.GetKey(KeyCode.Q)){
-            yaw = Mathf.Rad2Deg*-yawSpeed * Time.deltaTime;
+            yaw -= Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
         }
 
-        
+        if(Input.GetKeyDown(KeyCode.F)){
+            yaw += 180f;
+        }
+
+        pitch = -Mathf.Clamp(pitch,-30,30);
+        // yaw = Mathf.Clamp(yaw,-30,30);
+        roll = Mathf.Clamp(roll,-30,30);
 
         
         Quaternion desiredRot = Quaternion.Euler(-pitch, yaw, roll);
@@ -108,7 +111,7 @@ public class FlyController : MonoBehaviour
                 bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
                 bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity));
                 bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
-                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.rotation*transform.up*liftForce,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity));
 
                 Destroy(bullet1,bulletTTL);
                 Destroy(bullet2,bulletTTL);
@@ -152,14 +155,6 @@ public class FlyController : MonoBehaviour
                 burst.Stop();
         }
 
-
-        
-        //camTransform.forward = -this.gameObject.transform.forward;
-
-        //camTransform.position = this.gameObject.transform.localPosition;
-
-        //rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
-
-        text_attitude.text = transform.position.y.ToString();
+        text_attitude.text = "Altitude: " + transform.position.y.ToString();
     }
 }
