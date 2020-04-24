@@ -1,0 +1,90 @@
+﻿
+#pragma kernel CSMain
+
+//Uniform variables
+int numAgents;
+float3 attractorPos;
+
+//Allows us to tweak the strengths of each rule on the fly
+float sepStrength;
+float cohesStrength;
+float aligStrength;
+float atractStrength;
+float sightDistance;
+float speed;
+
+//One element for each agent
+RWStructuredBuffer<float3> posBuffer; 
+RWStructuredBuffer<float3> velBuffer;
+
+RWStructuredBuffer<float3> resultBuffer; //This is what we'll be returning to prevent race conditions
+
+
+//Boid concept found here https://natureofcode.com/book/chapter-6-autonomous-agents/
+[numthreads(8,1,1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    float3 cohesionDir = float3(0, 0, 0);
+    int numCloseBy = 0;
+
+    float3 seperationDir = float3(0, 0, 0);
+    float3 alignmentDir = float3(0, 0, 0);
+
+    float3 centeroid = float3(0, 0, 0);
+    
+    //for each agent, find the distance from the current agent. If it's <= sight radius, find all values
+    for(int i = 0; i < numAgents; i ++){
+        if(distance(posBuffer[i], posBuffer[id.x]) <= sightDistance && i != id.x){ //Can the agent see the other agents and it's not itself
+            numCloseBy += 1;
+            
+            centeroid += posBuffer[i];
+            
+            alignmentDir += velBuffer[i];
+
+            seperationDir += posBuffer[id.x] - posBuffer[i];
+
+
+        }
+    }
+    if(numCloseBy > 0){
+        //Cohesion Rule
+        centeroid += posBuffer[id.x];
+        centeroid /= (numCloseBy+1);
+        cohesionDir = centeroid - posBuffer[id.x];
+        cohesionDir = normalize(cohesionDir) * cohesStrength;
+
+        //Alignment Rule
+        alignmentDir += velBuffer[id.x];
+        alignmentDir /= (numCloseBy +1);
+
+        if(length(alignmentDir) != 0){ //We can't normalize if the vector has a length of 0
+            alignmentDir = normalize(alignmentDir);
+            alignmentDir *= aligStrength;
+        }else{
+            alignmentDir = velBuffer[id.x];
+        }
+        
+        
+        //Seperation Rule
+        seperationDir /= numCloseBy;
+        seperationDir *= sepStrength;
+    }
+    
+    
+    float3 attrractDir = normalize(attractorPos - posBuffer[id.x]) * atractStrength;
+    
+    //This is our desired velocity for each rule
+    attrractDir *= speed;
+    cohesionDir *= speed;
+    seperationDir *= speed;
+    alignmentDir *= speed;
+
+    //This is the force required to acheive the corresponding desired velocity
+    attrractDir = attrractDir - velBuffer[id.x];
+    cohesionDir = cohesionDir - velBuffer[id.x];
+    seperationDir = seperationDir - velBuffer[id.x];
+    alignmentDir = alignmentDir - velBuffer[id.x];
+
+    //Add all the forces together
+    resultBuffer[id.x] = attrractDir + cohesionDir + seperationDir + alignmentDir;
+}
