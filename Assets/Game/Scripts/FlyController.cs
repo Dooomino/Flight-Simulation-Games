@@ -35,6 +35,7 @@ public class FlyController : MonoBehaviour
         offsets[0] = new Vector3(-0.2f,0.5f,-0.5f);
         offsets[1] = new Vector3(0.2f,0.5f,-0.5f);
         lastFire = Time.deltaTime;
+        yaw=0;
     }
     // Update is called once per frame
     void Update()
@@ -65,12 +66,16 @@ public class FlyController : MonoBehaviour
         }
 
         if(Input.GetKey(KeyCode.E)){
-            yaw = Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
+            yaw += Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
         } else if(Input.GetKey(KeyCode.Q)){
-            yaw = Mathf.Rad2Deg*-yawSpeed * Time.deltaTime;
+            yaw -= Mathf.Rad2Deg*yawSpeed * Time.deltaTime;
         }
         if(Input.GetKeyDown(KeyCode.R)){
             rb.angularVelocity = new Vector3(0,0,0);
+        }
+
+        if(Input.GetKeyDown(KeyCode.F)){
+            yaw += 180f;
         }
 
         pitch = -Mathf.Clamp(pitch,-30,30);
@@ -94,10 +99,10 @@ public class FlyController : MonoBehaviour
         if(Input.GetButton("Fire1") && timer == 0){
                 GameObject bullet1 = Instantiate(bulletsPrefab,transform.position + offsets[0],Quaternion.Inverse(transform.rotation));
                 GameObject bullet2 = Instantiate(bulletsPrefab,transform.position + offsets[1],Quaternion.Inverse(transform.rotation));
-                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.forward*accSpeed*bulletSpeed,rb.velocity));
-                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.up*liftForce,rb.velocity));
-                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.forward*accSpeed*bulletSpeed,rb.velocity));
-                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(Quaternion.Inverse(transform.rotation)*transform.rotation*transform.up*liftForce,rb.velocity));
+                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
+                bullet1.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.forward*accSpeed*bulletSpeed,rb.velocity));
+                bullet2.GetComponent<Rigidbody>().AddForce(Vector3.Scale(transform.rotation*transform.up*liftForce,rb.velocity));
 
                 Destroy(bullet1,bulletTTL);
                 Destroy(bullet2,bulletTTL);
@@ -127,6 +132,6 @@ public class FlyController : MonoBehaviour
         }
         rb.velocity = Vector3.ClampMagnitude(rb.velocity,maxVelocity);
 
-        text_attitude.text = transform.position.y.ToString();
+        text_attitude.text = "Altitude: " + transform.position.y.ToString();
     }
 }
