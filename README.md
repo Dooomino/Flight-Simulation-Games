@@ -1,4 +1,4 @@
-# Unity-3D-FinalProject
+# Unity-3D-Project
 
 ## Requirements
 - [X] Enviornment Creation
